@@ -1,4 +1,6 @@
-﻿@{
+﻿@model FakeAPIMVC.Models.ProductViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -18,12 +20,11 @@
             {
                 <tr>
                     <th scope="row">@i</th>
-                    <td>@Model.Products[i].Name</td>
-                    <td><img src="@Model.Products[i].ImageUrl" alt="@Model.Products[i].Name" class="img-thumbnail" style="max-width: 100px;" /></td>        
+                    <td>@Model.Products[i].Title</td>
+                    <td><img src="@Model.Products[i].Image" alt="@Model.Products[i].Title" class="img-thumbnail" style="max-width: 100px;" /></td>        
                     <td>@Model.Products[i].Price.ToString("C")</td>
                 </tr>
             }
         </tbody>
     </table>
-    
 </div>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FakeAPIMVC.Models;
 
-namespace YourNamespace.Models
+namespace FakeAPIMVC.Models
 {
     public class ProductViewModel
     {

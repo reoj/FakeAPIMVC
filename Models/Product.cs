@@ -8,18 +8,12 @@ namespace FakeAPIMVC.Models
 {
     public class Product
     {
-        int id { get; set; }
-        string title { get; set; }
-        float price { get; set; }
-        string description { get; set; }
-        Category category { get; set; }
-        List<string> images { get; set; }
+        public int Id { get; set; }
+        public required string Title { get; set; }
+        public float Price { get; set; }
+        string? Description { get; set; }
+        
+        public string Image { get; set; }
     }
 
-    public class Category
-    {
-        int id { get; set; }
-        string name { get; set; }
-        string image { get; set; }  
-    }
 }

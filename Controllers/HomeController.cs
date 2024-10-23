@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using FakeAPIMVC.Models;
 using System.Net.Http.Json;
 namespace FakeAPIMVC.Controllers;
 using System.Linq;
+using FakeAPIMVC.Models;
 
 public class HomeController : Controller
 {
@@ -19,8 +19,12 @@ public class HomeController : Controller
     {
         var response = await _httpClient.GetAsync(RequestUri);
         response.EnsureSuccessStatusCode();
-        var Products = await response.Content.ReadFromJsonAsync<List<Product>>();
-        return View(Products);
+        var products = await response.Content.ReadFromJsonAsync<List<Product>>();
+        var viewModel = new ProductViewModel
+        {
+            Products = products
+        };
+        return View(viewModel);
     }
 
     public async Task<IActionResult> Details(int id)
