@@ -9,8 +9,9 @@
 <div class="text-center">
     <h1 class="display-4">Listado de Productos</h1>
     @Html.ActionLink("Add Product", "AddProduct", "Home", null, new { @class = "btn btn-primary" })
-
-
+    <p></p>
+    <input type="text" id="searchInput" class="form-control" placeholder="Search for products..."
+        onkeyup="searchProducts()" />
     <table class="table table-striped">
         <thead>
             <tr>
@@ -20,14 +21,7 @@
                 <th scope="col">Price</th>
             </tr>
         </thead>
-        <tbody>
-
-            <tr>
-                <td colspan="4">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search for products..."
-                        onkeyup="searchProducts()" />
-                </td>
-            </tr>
+        <tbody id="productTableBody">
 
             @for (int i = 0; i < Model.Products.Count; i++)
             {
@@ -63,22 +57,25 @@
                     </div>
                     <div class="form-group">
                         <label for="modalPriceInput"><strong>Price:</strong></label>
-                        <input type="text" id="modalPriceInput" class="form-control"  />
+                        <input type="text" id="modalPriceInput" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label for="modalDescriptionInput"><strong>Description:</strong></label>
-                        <textarea id="modalDescriptionInput" class="form-control" rows="3" ></textarea>
+                        <textarea id="modalDescriptionInput" class="form-control" rows="3"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="modalImage"><strong>Image:</strong></label>
-                        <img id="modalImage" src="" alt="Product Image" class="img-thumbnail" style="max-width: 100%;" />
-                        <input type="file" id="modalImageInput" class="form-control" readonly />
+                        <img id="modalImage" src="" alt="Product Image" class="img-thumbnail"
+                            style="max-width: 100%;" />
+                        
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -90,13 +87,58 @@
         var selectedProduct = product.find(p => p.Id === productId);
 
         if (selectedProduct) {
-            console.log(selectedProduct)
-            $('#modalTitleInput').text(selectedProduct.Title);
-            $('#modalPriceInput').text(selectedProduct.Price);
+            $('#modalTitleInput').val(selectedProduct.Title);
+            $('#modalPriceInput').val(selectedProduct.Price);
             $('#modalDescriptionInput').text(selectedProduct.Description);
             $('#modalImage').attr('src', selectedProduct.Image);
 
             $('#productModal').modal('show');
+        }
+    }
+    function saveChanges() {
+        var updatedProduct = {
+            Id: $('#productModal').data('id'),
+            Title: $('#modalTitleInput').val(),
+            Price: parseFloat($('#modalPriceInput').val()),
+            Description: $('#modalDescriptionInput').val(),
+            Image: $('#modalImage').attr('src')
+        };
+
+        $.ajax({
+            url: '@Url.Action("Edit", "Home")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedProduct),
+            success: function (response) {
+                // Handle success response
+                $('#productModal').modal('hide');
+                location.reload(); // Reload the page to see the changes
+            },
+            error: function (error) {
+                // Handle error response
+                console.error('Error updating product:', error);
+            }
+        });
+    }
+</script>
+<script>
+    function searchProducts() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("productTableBody");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
         }
     }
 </script>
