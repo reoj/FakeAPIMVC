@@ -1,31 +1,57 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FakeAPIMVC.Models;
-
+using System.Net.Http.Json;
 namespace FakeAPIMVC.Controllers;
+using System.Linq;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private const string RequestUri = "https://fakestoreapi.com/products";
+    private readonly HttpClient _httpClient;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(HttpClient httpClient)
     {
-        _logger = logger;
-    }
-    
-    public IActionResult Index()
-    {
-        return View();
+        _httpClient = httpClient;
     }
 
-    public IActionResult Privacy()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var response = await _httpClient.GetAsync(RequestUri);
+        response.EnsureSuccessStatusCode();
+        var Products = await response.Content.ReadFromJsonAsync<List<Product>>();
+        return View(Products);
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public async Task<IActionResult> Details(int id)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var response = await _httpClient.GetAsync($"{RequestUri} + {id}");
+        response.EnsureSuccessStatusCode();
+        var Product = await response.Content.ReadFromJsonAsync<Product>();
+        return View(Product);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(Product Product)
+    {
+        var response = await _httpClient.PostAsJsonAsync(RequestUri, Product);
+        response.EnsureSuccessStatusCode();
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(int id, Product Product)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"{RequestUri}+{id}", Product);
+        response.EnsureSuccessStatusCode();
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var response = await _httpClient.DeleteAsync($"{RequestUri}{id}");
+        response.EnsureSuccessStatusCode();
+        return RedirectToAction(nameof(Index));
     }
 }

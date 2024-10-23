@@ -3,3 +3,6 @@
 /appsettings.json
 /bin
 /obj
+.vs/FakeAPIMVC/config/applicationhost.config
+.vs/
+FakeAPIMVC.csproj.user

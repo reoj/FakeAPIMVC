@@ -4,6 +4,26 @@
 
 <div class="text-center">
     <h1 class="display-4">Listado de Productos</h1>
-    <p class="lead">Listado de productos de la tienda</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Image</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Products.Count; i++)
+            {
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@Model.Products[i].Name</td>
+                    <td><img src="@Model.Products[i].ImageUrl" alt="@Model.Products[i].Name" class="img-thumbnail" style="max-width: 100px;" /></td>        
+                    <td>@Model.Products[i].Price.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
     
 </div>
