@@ -38,9 +38,13 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(Product Product)
     {
-        var response = await _httpClient.PostAsJsonAsync(RequestUri, Product);
-        response.EnsureSuccessStatusCode();
-        return RedirectToAction(nameof(Index));        
+        if (ModelState.IsValid)
+        {
+            var response = await _httpClient.PostAsJsonAsync(RequestUri, Product);
+            response.EnsureSuccessStatusCode();
+            return View("Details", Product);
+        }
+        return View(Index);   
     }
     public IActionResult AddProduct()
     {
