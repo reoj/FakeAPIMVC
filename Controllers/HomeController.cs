@@ -40,7 +40,11 @@ public class HomeController : Controller
     {
         var response = await _httpClient.PostAsJsonAsync(RequestUri, Product);
         response.EnsureSuccessStatusCode();
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index));        
+    }
+    public IActionResult AddProduct()
+    {
+        return View();
     }
 
     [HttpPost]
